@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}CS Quiz Engine — Home{% endblock %}
+
+{% block extra_styles %}
+.hero {
+  text-align: center;
+  padding: 4rem 1rem 3rem;
+}
+.hero-tag {
+  display: inline-block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--accent2);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: rgba(6,182,212,0.1);
+  border: 1px solid rgba(6,182,212,0.3);
+  padding: 0.35rem 0.9rem;
+  border-radius: 100px;
+  margin-bottom: 1.5rem;
+}
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+.hero h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p {
+  color: var(--muted);
+  font-size: 1.1rem;
+  max-width: 500px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.7;
+}
+.stats-row {
+  display: flex; justify-content: center; gap: 1.5rem;
+  flex-wrap: wrap; margin-bottom: 3rem;
+}
+.stat-pill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 0.5rem 1.2rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.stat-pill span { color: var(--accent3); font-weight: 700; }
+.section-title {
+  font-size: 1.1rem; font-weight: 800;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 1rem;
+}
+.recent-grid { display: flex; flex-direction: column; gap: 0.75rem; }
+.recent-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem;
+}
+.recent-name { font-weight: 700; font-size: 1rem; }
+.recent-meta { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+.grade-badge {
+  width: 3rem; height: 3rem;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 1rem; font-weight: 700;
+  flex-shrink: 0;
+}
+.grade-A { background: rgba(16,185,129,0.15); color: var(--correct); border: 1px solid rgba(16,185,129,0.4); }
+.grade-B { background: rgba(6,182,212,0.15); color: var(--accent2); border: 1px solid rgba(6,182,212,0.4); }
+.grade-C { background: rgba(245,158,11,0.15); color: var(--accent3); border: 1px solid rgba(245,158,11,0.4); }
+.grade-D, .grade-F { background: rgba(239,68,68,0.15); color: var(--wrong); border: 1px solid rgba(239,68,68,0.4); }
+.empty-state {
+  text-align: center; padding: 2rem;
+  color: var(--muted); font-size: 0.95rem;
+}
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+  <div class="hero-tag">CSC 202 • Final CA</div>
+  <h1>Test Your <em>CS Knowledge</em></h1>
+  <p>{{ total_questions }} questions across OOP, Data Structures, Algorithms, Python, and more.</p>
+  <div class="stats-row">
+    <div class="stat-pill"><span>{{ total_questions }}</span> Questions</div>
+    <div class="stat-pill"><span>20</span> Minutes</div>
+    <div class="stat-pill"><span>{{ results_history|length if results_history else 0 }}</span> Tests Taken</div>
+  </div>
+  <a href="/test" class="btn btn-primary">Start Test →</a>
+</div>
+
+<div>
+  <div class="section-title">Recent Results</div>
+  {% if recent %}
+  <div class="recent-grid">
+    {% for r in recent %}
+    <div class="recent-card">
+      <div>
+        <div class="recent-name">{{ r.student_name }}</div>
+        <div class="recent-meta">{{ r.get_formatted_timestamp() }} · {{ r.score }}/{{ r.total }} correct</div>
+      </div>
+      <div class="grade-badge grade-{{ r.get_grade() }}">{{ r.get_grade() }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card empty-state">No tests submitted yet. Be the first! 🚀</div>
+  {% endif %}
+</div>
+{% endblock %}
